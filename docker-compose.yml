@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # --------------------------------------------------------------------------
+  # 1. SERVIÇO DE BANCO DE DADOS (MYSQL)
+  # --------------------------------------------------------------------------
+  mysql-db:
+    image: mysql:8.0
+    container_name: biblioteca-aps-mysql
+    restart: unless-stopped
+    environment:
+      # As senhas devem ser as mesmas configuradas no application.properties
+      MYSQL_ROOT_PASSWORD: fael  # Seu password
+      MYSQL_DATABASE: biblioteca_APS # Seu database name
+      # Não é necessário MYSQL_USER nem MYSQL_PASSWORD, pois você usa 'root'
+    ports:
+      # Mapeia a porta do container (3306) para a porta da sua máquina (3306)
+      - "3307:3306"
+    volumes:
+      # Persiste os dados do banco na sua máquina, para que não sejam perdidos
+      - db_data:/var/lib/mysql
+      # Opcional: Para executar scripts SQL adicionais na inicialização do MySQL
+      # - ./init:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+
+  # --------------------------------------------------------------------------
+  # 2. SERVIÇO DA APLICAÇÃO SPRING BOOT
+  # --------------------------------------------------------------------------
+  app:
+    # Constrói a imagem a partir do Dockerfile na pasta atual (o .)
+    build: .
+    container_name: biblioteca-aps-app
+    restart: unless-stopped
+    ports:
+      # Mapeia a porta 8080 do container para a porta 8080 da sua máquina
+      - "8080:8080"
+    environment:
+      # IMPORTANTE: Configura a URL do banco de dados para usar o nome do serviço
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/biblioteca_APS?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: fael
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create # Garante que as tabelas sejam criadas ao subir
+    depends_on:
+      - mysql-db # Garante que o banco de dados suba antes da aplicação
+    networks:
+      - app-network
+
+# --------------------------------------------------------------------------
+# REDES E VOLUMES
+# --------------------------------------------------------------------------
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge

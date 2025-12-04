@@ -1,0 +1,14 @@
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('O Senhor dos Anéis: A Sociedade do Anel', 'J.R.R. Tolkien', 'Fantasia', 576, '1954-07-29', 'Romance', 'DISPONIVEL');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('1984', 'George Orwell', 'Distopia', 328, '1949-06-08', 'Ficção Científica', 'EMPRESTADO');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('Dom Casmurro', 'Machado de Assis', 'Romance', 256, '1899-01-01', 'Literatura Brasileira', 'RESERVADO');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('O Pequeno Príncipe', 'Antoine de Saint-Exupéry', 'Infantojuvenil', 96, '1943-04-06', 'Infantil', 'DISPONIVEL');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('Harry Potter e a Pedra Filosofal', 'J.K. Rowling', 'Fantasia', 264, '1997-06-26', 'Romance', 'EMPRESTADO');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('O Hobbit', 'JRR Tolkien', 'Fantasia', 310, '1937-09-21', 'Romance', 'DISPONIVEL');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('O Codigo Da Vinci', 'Dan Brown', 'Suspense', 489, '2003-03-18', 'Suspense', 'EMPRESTADO');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('A Culpa e das Estrelas', 'John Green', 'Romance', 288, '2012-01-10', 'Drama', 'RESERVADO');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('Percy Jackson e o Ladrao de Raios', 'Rick Riordan', 'Fantasia', 400, '2005-06-28', 'Aventura', 'DISPONIVEL');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('O Morro dos Ventos Uivantes', 'Emily Bronte', 'Romance', 416, '1847-12-01', 'Classico', 'EMPRESTADO');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('Memorias Postumas de Bras Cubas', 'Machado de Assis', 'Romance', 208, '1881-03-15', 'Literatura Brasileira', 'DISPONIVEL');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('It A Coisa', 'Stephen King', 'Terror', 1138, '1986-09-15', 'Horror', 'RESERVADO');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('O Nome do Vento', 'Patrick Rothfuss', 'Fantasia', 662, '2007-03-27', 'Fantasia', 'DISPONIVEL');
+INSERT INTO livros (titulo, autor, genero, num_paginas, ano_de_publicacao, categoria, status) VALUES ('Jogos Vorazes', 'Suzanne Collins', 'Distopia', 400, '2008-09-14', 'Aventura', 'EMPRESTADO');
