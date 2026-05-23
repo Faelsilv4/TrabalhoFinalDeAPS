@@ -66,8 +66,5 @@ public class Livro {
     // Inicializar a lista é uma boa prática
     private List<Emprestimo> historicoEmprestimos = new ArrayList<>();
 
-    // Um Livro pode ter muitas Reservas
-    @JsonIgnore
-    @OneToMany(mappedBy = "livro", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Reserva> reservas = new ArrayList<>();
+  
 }

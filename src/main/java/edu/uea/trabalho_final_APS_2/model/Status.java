@@ -1,11 +1,9 @@
 package edu.uea.trabalho_final_APS_2.model;
 
 public enum Status {
-    
-    // Conforme o diagrama:
-    DISPONIVEL(0), 
-    EMPRESTADO(1), 
-    RESERVADO(2);
+
+    DISPONIVEL(0),
+    EMPRESTADO(1);
 
     private final int valor;
 
