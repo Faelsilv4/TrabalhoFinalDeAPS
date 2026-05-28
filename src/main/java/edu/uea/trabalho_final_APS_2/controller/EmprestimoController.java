@@ -3,6 +3,7 @@
 package edu.uea.trabalho_final_APS_2.controller;
 
 import edu.uea.trabalho_final_APS_2.dto.EmprestimoResponse;
+import edu.uea.trabalho_final_APS_2.dto.EmprestimoSimplificadoResponse;
 import edu.uea.trabalho_final_APS_2.dto.LivroResponse;
 import edu.uea.trabalho_final_APS_2.dto.UsuarioPerfilResponse;
 import edu.uea.trabalho_final_APS_2.model.Emprestimo;
@@ -30,11 +31,7 @@ public class EmprestimoController {
     }
 
     // --- 1. REALIZAR EMPRÉSTIMO (Aluno) ---
-    /**
-     * Aluno solicita o empréstimo (cria o registro).
-     * Requer ROLE_ALUNO.
-     */
-    // --- 1. REALIZAR EMPRÉSTIMO (Aluno) ---
+    
     @PreAuthorize("hasRole('ALUNO')")
     @PostMapping("/emprestar/{livroId}")
     public ResponseEntity<?> realizarEmprestimo(@PathVariable Long livroId, Authentication authentication) {
@@ -43,7 +40,7 @@ public class EmprestimoController {
         try {
             Emprestimo novoEmprestimo = emprestimoService.realizarNovoEmprestimo(livroId, userEmail);
             // 🚨 Retorna o DTO mapeado
-            return ResponseEntity.ok(mapearEmprestimo(novoEmprestimo));
+            return ResponseEntity.ok(mapearEmprestimoSimplificadoResponse(novoEmprestimo));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -58,7 +55,7 @@ public class EmprestimoController {
         try {
             Emprestimo emprestimoDevolvido = emprestimoService.devolverLivro(emprestimoId, userEmail);
             // 🚨 Retorna o DTO mapeado
-            return ResponseEntity.ok(mapearEmprestimo(emprestimoDevolvido));
+            return ResponseEntity.ok(mapearEmprestimoSimplificadoResponse(emprestimoDevolvido));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -67,13 +64,14 @@ public class EmprestimoController {
     // --- 3. VISUALIZAR MEUS EMPRÉSTIMOS (Aluno) ---
     @PreAuthorize("hasRole('ALUNO')")
     @GetMapping("/meus")
-    public ResponseEntity<List<EmprestimoResponse>> getMeusEmprestimos(Authentication authentication) {
+    public ResponseEntity<List<EmprestimoSimplificadoResponse>> getMeusEmprestimos(Authentication authentication) {
         String userEmail = authentication.getName();
         List<Emprestimo> emprestimos = emprestimoService.buscarEmprestimosPorUsuario(userEmail);
 
         // 🚨 Mapeia a lista completa para DTOs
-        List<EmprestimoResponse> responseList = emprestimos.stream()
-                .map(this::mapearEmprestimo)
+        List<EmprestimoSimplificadoResponse> responseList = emprestimos.stream()
+                .map(this::mapearEmprestimoSimplificadoResponse
+                )
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(responseList);
@@ -83,7 +81,6 @@ public class EmprestimoController {
     @PreAuthorize("hasRole('BIBLIOTECARIO')")
     @GetMapping("/todos")
     public ResponseEntity<?> getTodosEmprestimos() { // <-- A mudança está aqui
-
         List<Emprestimo> todos = emprestimoService.buscarTodosEmprestimos();
 
         // 2. Verifica se a lista está vazia
@@ -105,8 +102,18 @@ public class EmprestimoController {
         return ResponseEntity.ok(responseList);
     }
 
-    // 🚨 COLOQUE OS TRÊS MÉTODOS AUXILIARES (mapearUsuarioBase, mapearLivro e
-    // mapearEmprestimo) AQUI
+
+    // --- MAPPER SIMPLIFICADO (para /meus, /emprestar, /devolver) ---
+    private EmprestimoSimplificadoResponse mapearEmprestimoSimplificadoResponse(Emprestimo emprestimo) {
+        EmprestimoSimplificadoResponse dto = new EmprestimoSimplificadoResponse();
+        dto.setId(emprestimo.getId());
+        dto.setDataEmprestimo(emprestimo.getDataEmprestimo());
+        dto.setDataDevolucao(emprestimo.getDataDevolucao());
+        dto.setNomeUsuario(emprestimo.getUsuario().getNome());
+        dto.setNomeLivro(emprestimo.getLivro().getTitulo());
+        dto.setStatusLivro(emprestimo.getLivro().getStatus());
+        return dto;
+    }
     // Este método deve ser criado em uma classe auxiliar ou no próprio controller
     // para mapear de Entidade para DTO.
 

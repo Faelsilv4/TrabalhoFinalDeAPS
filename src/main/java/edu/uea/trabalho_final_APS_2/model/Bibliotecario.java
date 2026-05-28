@@ -19,14 +19,4 @@ public class Bibliotecario extends Usuario {
     // --- Atributos Específicos de Bibliotecario ---
     private LocalDate anoDeContratacao;
 
-
-
-    // Construtor para forçar a definição da role no momento da criação
-
-    // public Bibliotecario(Long id, String nome, String email, String senha, LocalDate anoDeContratacao) {
-    //     // Chama o construtor da superclasse, passando o Role.
-    //     super(id, nome, email, senha, Role.ROLE_BIBLIOTECARIO); 
-    //     this.anoDeContratacao = anoDeContratacao;
-    // }
-
 }
