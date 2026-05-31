@@ -12,11 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 // Define que esta classe é um componente de Serviço do Spring
-@Service 
+@Service
 public class LivroService {
 
     // Injeta o Repositório, permitindo o acesso ao banco de dados
-    @Autowired 
+    @Autowired
     private LivroRepository livroRepository;
 
     // --- Métodos de CRUD (Create, Read, Update, Delete) ---
@@ -26,7 +26,7 @@ public class LivroService {
      */
     @Transactional // Garante que a operação seja atômica
     public Livro salvar(Livro livro) {
-        // Se for uma atualização, aqui é um bom lugar para validar se 
+        // Se for uma atualização, aqui é um bom lugar para validar se
         // o status está sendo alterado corretamente, mas manteremos simples por hora.
         return livroRepository.save(livro);
     }
@@ -45,21 +45,37 @@ public class LivroService {
         return livroRepository.findById(id);
     }
 
+    @Transactional
+    public Livro atualizar(Long id, Livro livroAtualizado) {
+
+        Livro livroExistente = livroRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Livro não encontrado."));
+
+        livroExistente.setTitulo(livroAtualizado.getTitulo());
+        livroExistente.setAutor(livroAtualizado.getAutor());
+        livroExistente.setGenero(livroAtualizado.getGenero());
+        livroExistente.setNumPaginas(livroAtualizado.getNumPaginas());
+        livroExistente.setAnoDePublicacao(livroAtualizado.getAnoDePublicacao());
+        livroExistente.setCategoria(livroAtualizado.getCategoria());
+
+        return livroRepository.save(livroExistente);
+    }
+
     /**
      * Exclui um livro pelo seu ID, mas só se estiver DISPONÍVEL.
      */
     @Transactional // Garante que a operação seja atômica
     public void deletar(Long id) {
-        
+
         Livro livro = livroRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Livro não encontrado."));
-        
+                .orElseThrow(() -> new RuntimeException("Livro não encontrado."));
+
         // 🚨 VALIDAÇÃO DE REGRA DE NEGÓCIO: Só deleta se o status for DISPONIVEL
         if (livro.getStatus() != Status.DISPONIVEL) {
-             throw new RuntimeException("Não é possível deletar o livro. Status atual: " 
-                 + livro.getStatus() + ". Cancele reservas ou aguarde a devolução.");
+            throw new RuntimeException("Não é possível deletar o livro. Status atual: "
+                    + livro.getStatus() + ". Cancele reservas ou aguarde a devolução.");
         }
-        
+
         livroRepository.deleteById(id);
     }
 }

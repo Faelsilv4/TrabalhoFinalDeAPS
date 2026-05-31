@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors; // 🚨 Adicionar este import
 
-@RestController 
-@RequestMapping("/api/livros") 
+@RestController
+@RequestMapping("/api/livros")
 public class LivroController {
 
     @Autowired
@@ -21,8 +21,8 @@ public class LivroController {
 
     // 1. Rota: Criar/Atualizar Livro
     // Retorna o DTO mapeado (ou Livro para simplificar a criação/atualização)
-    @PostMapping 
-    @PreAuthorize("hasRole('BIBLIOTECARIO')") 
+    @PostMapping
+    @PreAuthorize("hasRole('BIBLIOTECARIO')")
     public ResponseEntity<LivroResponse> salvarLivro(@RequestBody Livro livro) {
         Livro novoLivro = livroService.salvar(livro);
         // 🚨 Mapeia o resultado para DTO antes de retornar
@@ -31,34 +31,49 @@ public class LivroController {
 
     // 2. Rota: Listar Todos os Livros
     // 🚨 Tipo de Retorno alterado para List<LivroResponse>
-    @GetMapping 
-    @PreAuthorize("hasAnyRole('ALUNO', 'BIBLIOTECARIO')") 
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ALUNO', 'BIBLIOTECARIO')")
     public ResponseEntity<List<LivroResponse>> buscarTodosLivros() {
         List<Livro> livros = livroService.buscarTodos();
-        
+
         // 🚨 Converte a lista de Entidades para a lista de DTOs
         List<LivroResponse> responseList = livros.stream()
-             .map(this::mapearLivro)
-             .collect(Collectors.toList());
-             
+                .map(this::mapearLivro)
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(responseList);
     }
 
     // 3. Rota: Buscar Livro por ID
     // 🚨 Tipo de Retorno alterado para LivroResponse
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ALUNO', 'BIBLIOTECARIO')") 
+    @PreAuthorize("hasAnyRole('ALUNO', 'BIBLIOTECARIO')")
     public ResponseEntity<LivroResponse> buscarLivroPorId(@PathVariable Long id) {
         return livroService.buscarPorId(id)
                 // 🚨 Se encontrar (map), mapeia o Livro para o LivroResponse
                 .map(this::mapearLivro)
-                .map(ResponseEntity::ok) 
-                .orElseGet(() -> ResponseEntity.notFound().build()); 
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // 4. Rota: Atualizar Livro por ID
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('BIBLIOTECARIO')")
+    public ResponseEntity<?> atualizarLivro(
+            @PathVariable Long id,
+            @RequestBody Livro livro) {
+
+        try {
+            Livro livroAtualizado = livroService.atualizar(id, livro);
+            return ResponseEntity.ok(mapearLivro(livroAtualizado));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // 4. Rota: Deletar Livro por ID (sem alteração)
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('BIBLIOTECARIO')") 
+    @PreAuthorize("hasRole('BIBLIOTECARIO')")
     public ResponseEntity<Void> deletarLivro(@PathVariable Long id) {
         livroService.deletar(id);
         return ResponseEntity.noContent().build();
