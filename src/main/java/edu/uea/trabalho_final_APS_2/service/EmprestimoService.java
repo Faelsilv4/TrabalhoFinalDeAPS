@@ -56,7 +56,7 @@ public class EmprestimoService {
         Livro livro = livroRepository.findById(livroId)
                 .orElseThrow(() -> new RegraNegocioException("Livro com ID " + livroId + " não encontrado."));
 
-        // 🚀 REGRA DE LIMITE: Limite de 1 livro para Alunos
+        //  REGRA DE LIMITE: Limite de 1 livro para Alunos
         List<Emprestimo> emprestimosAtivos = emprestimoRepository
                 .findByUsuarioIdAndDataDevolucaoIsNull(usuario.getId());
 
