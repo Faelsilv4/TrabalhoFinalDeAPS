@@ -58,6 +58,7 @@ public class Usuario {
 
     // Novo campo para o Spring Security
     @Enumerated(EnumType.STRING) // Garante que o nome da Role ('ROLE_ALUNO') seja salvo no DB
+    
     private Role role;
 
 }

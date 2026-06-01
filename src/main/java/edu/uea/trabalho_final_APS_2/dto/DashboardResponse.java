@@ -15,4 +15,6 @@ public class DashboardResponse {
     private long livrosDisponiveis;
     private long livrosEmprestados;
     private long totalEmprestimos;
+    private long totalAlunos;
+    private long totalBibliotecarios;
 }
