@@ -17,7 +17,7 @@ public class DashboardController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('BIBLIOTECARIO')")
+    @PreAuthorize("hasAnyRole('BIBLIOTECARIO', 'ADMIN')")
     public ResponseEntity<DashboardResponse> buscarIndicadores() {
         return ResponseEntity.ok(dashboardService.buscarIndicadores());
     }

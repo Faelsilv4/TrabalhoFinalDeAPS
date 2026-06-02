@@ -46,20 +46,17 @@ public class EmprestimoController {
         }
     }
 
-    // --- 2. DEVOLVER EMPRÉSTIMO (Aluno) ---
-    @PreAuthorize("hasRole('ALUNO')")
-    @PostMapping("/devolver/{emprestimoId}")
-    public ResponseEntity<?> devolverEmprestimo(@PathVariable Long emprestimoId, Authentication authentication) {
-        String userEmail = authentication.getName();
-
-        try {
-            Emprestimo emprestimoDevolvido = emprestimoService.devolverLivro(emprestimoId, userEmail);
-            // 🚨 Retorna o DTO mapeado
-            return ResponseEntity.ok(mapearEmprestimoSimplificadoResponse(emprestimoDevolvido));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    // --- 2. DEVOLVER EMPRÉSTIMO (Bibliotecário) ---
+    @PreAuthorize("hasAnyRole('BIBLIOTECARIO', 'ADMIN')")
+@PostMapping("/devolver/{emprestimoId}")
+public ResponseEntity<?> devolverEmprestimo(@PathVariable Long emprestimoId) {
+    try {
+        Emprestimo emprestimoDevolvido = emprestimoService.devolverLivro(emprestimoId);
+        return ResponseEntity.ok(mapearEmprestimo(emprestimoDevolvido));
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
+}
 
     // --- 3. VISUALIZAR MEUS EMPRÉSTIMOS (Aluno) ---
     @PreAuthorize("hasRole('ALUNO')")
@@ -78,7 +75,7 @@ public class EmprestimoController {
     }
 
     // --- 4. VISUALIZAR TODOS OS EMPRÉSTIMOS (Bibliotecário) ---
-    @PreAuthorize("hasRole('BIBLIOTECARIO')")
+    @PreAuthorize("hasAnyRole('BIBLIOTECARIO', 'ADMIN')")
     @GetMapping("/todos")
     public ResponseEntity<?> getTodosEmprestimos() { // <-- A mudança está aqui
         List<Emprestimo> todos = emprestimoService.buscarTodosEmprestimos();

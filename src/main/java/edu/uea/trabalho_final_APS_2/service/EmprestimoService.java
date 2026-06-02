@@ -56,7 +56,7 @@ public class EmprestimoService {
         Livro livro = livroRepository.findById(livroId)
                 .orElseThrow(() -> new RegraNegocioException("Livro com ID " + livroId + " não encontrado."));
 
-        //  REGRA DE LIMITE: Limite de 1 livro para Alunos
+        // REGRA DE LIMITE: Limite de 1 livro para Alunos
         List<Emprestimo> emprestimosAtivos = emprestimoRepository
                 .findByUsuarioIdAndDataDevolucaoIsNull(usuario.getId());
 
@@ -91,25 +91,17 @@ public class EmprestimoService {
      * @param userEmail    Email do aluno logado (para checar titularidade).
      */
     @Transactional
-    public Emprestimo devolverLivro(Long emprestimoId, String userEmail) {
+    public Emprestimo devolverLivro(Long emprestimoId) {
 
         Emprestimo emprestimo = emprestimoRepository.findById(emprestimoId)
                 .orElseThrow(() -> new RegraNegocioException("Empréstimo com ID " + emprestimoId + " não encontrado."));
 
-        // 1. Validar titularidade (O aluno só pode devolver o que pegou)
-        if (!emprestimo.getUsuario().getEmail().equals(userEmail)) {
-            throw new RegraNegocioException("Você não tem permissão para devolver este livro.");
-        }
-
-        // 2. Garante que o livro não foi devolvido
         if (emprestimo.getDataDevolucao() != null) {
             throw new RegraNegocioException("Este livro já foi devolvido em: " + emprestimo.getDataDevolucao());
         }
 
-        // --- Configuração da Devolução ---
         emprestimo.setDataDevolucao(LocalDate.now());
 
-        // --- Atualização de Status do Livro ---
         Livro livro = emprestimo.getLivro();
         livro.setStatus(Status.DISPONIVEL);
         livroRepository.save(livro);
@@ -137,5 +129,4 @@ public class EmprestimoService {
         return emprestimoRepository.findAll();
     }
 
-    
 }

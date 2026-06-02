@@ -92,7 +92,7 @@ public class PerfilController {
      * Retorna a lista de todos os usuários cadastrados (alunos e bibliotecários).
      * Rota: GET /api/perfil/todos-usuarios
      */
-    @PreAuthorize("hasRole('BIBLIOTECARIO')")
+    @PreAuthorize("hasAnyRole('BIBLIOTECARIO', 'ADMIN')")
     @GetMapping("/todos-usuarios")
     public ResponseEntity<List<UsuarioPerfilResponse>> getTodosUsuarios() {
 

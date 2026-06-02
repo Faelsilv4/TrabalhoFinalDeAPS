@@ -11,49 +11,47 @@ import org.springframework.stereotype.Service;
 @Service
 public class DashboardService {
 
-    private final LivroRepository livroRepository;
-    private final EmprestimoRepository emprestimoRepository;
-    private final UsuarioRepository usuarioRepository;
+        private final LivroRepository livroRepository;
+        private final EmprestimoRepository emprestimoRepository;
+        private final UsuarioRepository usuarioRepository;
 
-    public DashboardService(
-            LivroRepository livroRepository,
-            EmprestimoRepository emprestimoRepository,
-            UsuarioRepository usuarioRepository) {
+        public DashboardService(
+                        LivroRepository livroRepository,
+                        EmprestimoRepository emprestimoRepository,
+                        UsuarioRepository usuarioRepository) {
 
-        this.livroRepository = livroRepository;
-        this.emprestimoRepository = emprestimoRepository;
-        this.usuarioRepository = usuarioRepository;
-    }
+                this.livroRepository = livroRepository;
+                this.emprestimoRepository = emprestimoRepository;
+                this.usuarioRepository = usuarioRepository;
+        }
 
-    public DashboardResponse buscarIndicadores() {
+        public DashboardResponse buscarIndicadores() {
 
-        long totalLivros = livroRepository.count();
+                long totalLivros = livroRepository.count();
 
-        long livrosDisponiveis = livroRepository.findAll()
-                .stream()
-                .filter(livro -> livro.getStatus() == Status.DISPONIVEL)
-                .count();
+                long livrosDisponiveis = livroRepository.findAll()
+                                .stream()
+                                .filter(livro -> livro.getStatus() == Status.DISPONIVEL)
+                                .count();
 
-        long livrosEmprestados = livroRepository.findAll()
-                .stream()
-                .filter(livro -> livro.getStatus() == Status.EMPRESTADO)
-                .count();
+                long livrosEmprestados = livroRepository.findAll()
+                                .stream()
+                                .filter(livro -> livro.getStatus() == Status.EMPRESTADO)
+                                .count();
 
-        long totalEmprestimos = emprestimoRepository.count();
+                long totalEmprestimos = emprestimoRepository.count();
 
-        long totalAlunos =
-                usuarioRepository.countByRole(Role.ROLE_ALUNO);
+                long totalAlunos = usuarioRepository.countByRole(Role.ROLE_ALUNO);
 
-        long totalBibliotecarios =
-                usuarioRepository.countByRole(Role.ROLE_BIBLIOTECARIO);
+                long totalBibliotecarios = usuarioRepository.countByRole(Role.ROLE_BIBLIOTECARIO)
+                                + usuarioRepository.countByRole(Role.ROLE_ADMIN);
 
-        return new DashboardResponse(
-                totalLivros,
-                livrosDisponiveis,
-                livrosEmprestados,
-                totalEmprestimos,
-                totalAlunos,
-                totalBibliotecarios
-        );
-    }
+                return new DashboardResponse(
+                                totalLivros,
+                                livrosDisponiveis,
+                                livrosEmprestados,
+                                totalEmprestimos,
+                                totalAlunos,
+                                totalBibliotecarios);
+        }
 }

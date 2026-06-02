@@ -22,7 +22,7 @@ public class LivroController {
     // 1. Rota: Criar/Atualizar Livro
     // Retorna o DTO mapeado (ou Livro para simplificar a criação/atualização)
     @PostMapping
-    @PreAuthorize("hasRole('BIBLIOTECARIO')")
+    @PreAuthorize("hasAnyRole('BIBLIOTECARIO', 'ADMIN')")
     public ResponseEntity<LivroResponse> salvarLivro(@RequestBody Livro livro) {
         Livro novoLivro = livroService.salvar(livro);
         // 🚨 Mapeia o resultado para DTO antes de retornar
@@ -32,7 +32,7 @@ public class LivroController {
     // 2. Rota: Listar Todos os Livros
     // 🚨 Tipo de Retorno alterado para List<LivroResponse>
     @GetMapping
-    @PreAuthorize("hasAnyRole('ALUNO', 'BIBLIOTECARIO')")
+    @PreAuthorize("hasAnyRole('ALUNO', 'BIBLIOTECARIO', 'ADMIN')")
     public ResponseEntity<List<LivroResponse>> buscarTodosLivros() {
         List<Livro> livros = livroService.buscarTodos();
 
@@ -47,7 +47,7 @@ public class LivroController {
     // 3. Rota: Buscar Livro por ID
     // 🚨 Tipo de Retorno alterado para LivroResponse
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ALUNO', 'BIBLIOTECARIO')")
+    @PreAuthorize("hasAnyRole('ALUNO', 'BIBLIOTECARIO', 'ADMIN')")
     public ResponseEntity<LivroResponse> buscarLivroPorId(@PathVariable Long id) {
         return livroService.buscarPorId(id)
                 // 🚨 Se encontrar (map), mapeia o Livro para o LivroResponse
@@ -58,7 +58,7 @@ public class LivroController {
 
     // 4. Rota: Atualizar Livro por ID
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('BIBLIOTECARIO')")
+    @PreAuthorize("hasAnyRole('BIBLIOTECARIO', 'ADMIN')")
     public ResponseEntity<?> atualizarLivro(
             @PathVariable Long id,
             @RequestBody Livro livro) {
@@ -73,7 +73,7 @@ public class LivroController {
 
     // 4. Rota: Deletar Livro por ID (sem alteração)
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('BIBLIOTECARIO')")
+    @PreAuthorize("hasAnyRole('BIBLIOTECARIO', 'ADMIN')")
     public ResponseEntity<Void> deletarLivro(@PathVariable Long id) {
         livroService.deletar(id);
         return ResponseEntity.noContent().build();
