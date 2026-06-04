@@ -1,3 +1,4 @@
+
 package edu.uea.trabalho_final_APS_2.dto;
 
 import lombok.AllArgsConstructor;
@@ -15,6 +16,12 @@ public class DashboardResponse {
     private long livrosDisponiveis;
     private long livrosEmprestados;
     private long totalEmprestimos;
+
     private long totalAlunos;
+    private long alunosAtivos;
+    private long alunosInativos;
+
     private long totalBibliotecarios;
+    private long bibliotecariosAtivos;
+    private long bibliotecariosInativos;
 }
