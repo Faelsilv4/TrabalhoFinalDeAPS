@@ -1,5 +1,6 @@
 package edu.uea.trabalho_final_APS_2.controller;
 
+import edu.uea.trabalho_final_APS_2.dto.BibliotecarioAtualizarRequest;
 import edu.uea.trabalho_final_APS_2.dto.BibliotecarioRegistroRequest;
 import edu.uea.trabalho_final_APS_2.dto.BibliotecarioResponse;
 import edu.uea.trabalho_final_APS_2.dto.RegistroResponse;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/admin/bibliotecarios")
@@ -50,6 +52,40 @@ public class BibliotecarioAdminController {
                 .toList();
 
         return ResponseEntity.ok(bibliotecarios);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BibliotecarioResponse> atualizarBibliotecario(
+            @PathVariable Long id,
+            @RequestBody BibliotecarioAtualizarRequest request) {
+
+        Usuario usuario = buscarUsuario(id);
+        validarSeEhBibliotecarioOuAdmin(usuario);
+
+        if (request.getNome() == null || request.getNome().trim().isEmpty()) {
+            throw new RuntimeException("O nome do bibliotecário não pode ser vazio.");
+        }
+
+        if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("O email do bibliotecário não pode ser vazio.");
+        }
+
+        Optional<Usuario> usuarioComEmail = usuarioRepository.findByEmail(request.getEmail());
+
+        if (usuarioComEmail.isPresent() && !usuarioComEmail.get().getId().equals(id)) {
+            throw new RuntimeException("Este email já está cadastrado para outro usuário.");
+        }
+
+        usuario.setNome(request.getNome().trim());
+        usuario.setEmail(request.getEmail().trim());
+
+        if (usuario instanceof Bibliotecario bibliotecario) {
+            bibliotecario.setAnoDeContratacao(request.getAnoDeContratacao());
+        }
+
+        Usuario usuarioAtualizado = usuarioRepository.save(usuario);
+
+        return ResponseEntity.ok(mapearBibliotecario(usuarioAtualizado));
     }
 
     @PutMapping("/{id}/ativar")
