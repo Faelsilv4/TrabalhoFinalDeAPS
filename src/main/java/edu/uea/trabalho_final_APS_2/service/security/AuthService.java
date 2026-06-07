@@ -4,7 +4,7 @@ import edu.uea.trabalho_final_APS_2.dto.AlunoRegistroRequest;
 import edu.uea.trabalho_final_APS_2.dto.AuthResponse;
 import edu.uea.trabalho_final_APS_2.dto.BibliotecarioRegistroRequest;
 import edu.uea.trabalho_final_APS_2.dto.LoginRequest;
-import edu.uea.trabalho_final_APS_2.dto.NomeUpdateRequest;
+import edu.uea.trabalho_final_APS_2.dto.PerfilUpdateRequest;
 import edu.uea.trabalho_final_APS_2.dto.RegistroResponse;
 import edu.uea.trabalho_final_APS_2.exception.EmailJaCadastradoException;
 import edu.uea.trabalho_final_APS_2.model.Aluno;
@@ -138,17 +138,26 @@ public class AuthService {
     }
 
     @Transactional
-    public Usuario atualizarNome(String userEmail, NomeUpdateRequest request) {
+    public Usuario atualizarPerfil(String userEmail, PerfilUpdateRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
 
-        String novoNome = request.getNovoNome();
-
-        if (novoNome == null || novoNome.trim().isEmpty()) {
+        if (request.getNome() == null || request.getNome().trim().isEmpty()) {
             throw new RuntimeException("O nome não pode ser vazio.");
         }
 
-        usuario.setNome(novoNome);
+        if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+            throw new RuntimeException("O email não pode ser vazio.");
+        }
+
+        Optional<Usuario> usuarioComEmail = usuarioRepository.findByEmail(request.getEmail().trim());
+
+        if (usuarioComEmail.isPresent() && !usuarioComEmail.get().getId().equals(usuario.getId())) {
+            throw new RuntimeException("Este email já está cadastrado para outro usuário.");
+        }
+
+        usuario.setNome(request.getNome().trim());
+        usuario.setEmail(request.getEmail().trim());
 
         return usuarioRepository.save(usuario);
     }
