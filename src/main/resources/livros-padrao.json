@@ -1,0 +1,110 @@
+[
+  {
+    "titulo": "O Senhor dos Anéis: A Sociedade do Anel",
+    "autor": "J.R.R. Tolkien",
+    "genero": "Fantasia",
+    "numPaginas": 576,
+    "anoDePublicacao": "1954-07-28",
+    "categoria": "Romance",
+    "urlCapa": "https://covers.openlibrary.org/b/isbn/9780261103573-L.jpg"
+  },
+  {
+    "titulo": "Dom Casmurro",
+    "autor": "Machado de Assis",
+    "genero": "Romance",
+    "numPaginas": 256,
+    "anoDePublicacao": "1898-12-31",
+    "categoria": "Literatura Brasileira",
+    "urlCapa": "https://covers.openlibrary.org/b/id/8231856-L.jpg"
+  },
+  {
+    "titulo": "O Pequeno Príncipe",
+    "autor": "Antoine de Saint-Exupéry",
+    "genero": "Infantojuvenil",
+    "numPaginas": 96,
+    "anoDePublicacao": "1943-04-06",
+    "categoria": "Infantil",
+    "urlCapa": "https://m.media-amazon.com/images/I/51nNwwVSclL._SL1007_.jpg"
+  },
+  {
+    "titulo": "Harry Potter e a Pedra Filosofal",
+    "autor": "J.K. Rowling",
+    "genero": "Fantasia",
+    "numPaginas": 264,
+    "anoDePublicacao": "1997-06-26",
+    "categoria": "Romance",
+    "urlCapa": "https://covers.openlibrary.org/b/isbn/9788532511010-L.jpg"
+  },
+  {
+    "titulo": "O Hobbit",
+    "autor": "J.R.R. Tolkien",
+    "genero": "Fantasia",
+    "numPaginas": 310,
+    "anoDePublicacao": "1937-09-21",
+    "categoria": "Romance",
+    "urlCapa": "https://covers.openlibrary.org/b/isbn/9788595084742-L.jpg"
+  },
+  {
+    "titulo": "O Morro dos Ventos Uivantes",
+    "autor": "Emily Bronte",
+    "genero": "Romance",
+    "numPaginas": 416,
+    "anoDePublicacao": "1847-11-30",
+    "categoria": "Classico",
+    "urlCapa": "https://m.media-amazon.com/images/I/9154Q7fv5UL._SL1500_.jpg"
+  },
+  {
+    "titulo": "Memórias Póstumas de Brás Cubas",
+    "autor": "Machado de Assis",
+    "genero": "Romance",
+    "numPaginas": 208,
+    "anoDePublicacao": "1881-03-14",
+    "categoria": "Literatura Brasileira",
+    "urlCapa": "https://m.media-amazon.com/images/I/815u+SBDpJL._SL1500_.jpg"
+  },
+  {
+    "titulo": "It A Coisa",
+    "autor": "Stephen King",
+    "genero": "Terror",
+    "numPaginas": 1138,
+    "anoDePublicacao": "1986-09-14",
+    "categoria": "Horror",
+    "urlCapa": "https://covers.openlibrary.org/b/isbn/9781501142970-L.jpg"
+  },
+  {
+    "titulo": "O Nome do Vento",
+    "autor": "Patrick Rothfuss",
+    "genero": "Fantasia",
+    "numPaginas": 662,
+    "anoDePublicacao": "2007-03-26",
+    "categoria": "Fantasia",
+    "urlCapa": "https://m.media-amazon.com/images/I/81CGmkRG9GL._SL1500_.jpg"
+  },
+  {
+    "titulo": "Jogos Vorazes",
+    "autor": "Suzanne Collins",
+    "genero": "Distopia",
+    "numPaginas": 400,
+    "anoDePublicacao": "2008-09-13",
+    "categoria": "Aventura",
+    "urlCapa": "https://m.media-amazon.com/images/I/71WOkspHbOL._SL1500_.jpg"
+  },
+  {
+    "titulo": "Clean Code",
+    "autor": "Robert C. Martin",
+    "genero": "Livro Técnico",
+    "numPaginas": 440,
+    "anoDePublicacao": "2008-03-19",
+    "categoria": "Programação",
+    "urlCapa": "https://covers.openlibrary.org/b/isbn/9780132350884-L.jpg"
+  },
+  {
+    "titulo": "Entendendo Algoritmos",
+    "autor": "Aditya Y. Bhargava",
+    "genero": "Livro técnico",
+    "numPaginas": 256,
+    "anoDePublicacao": "2016-11-01",
+    "categoria": "Computação",
+    "urlCapa": "https://m.media-amazon.com/images/I/71Vkg7GfPFL._SL1296_.jpg"
+  }
+]
