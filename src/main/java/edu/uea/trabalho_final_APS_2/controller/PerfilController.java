@@ -3,6 +3,7 @@ package edu.uea.trabalho_final_APS_2.controller;
 import edu.uea.trabalho_final_APS_2.dto.AlunoPerfilResponse;
 import edu.uea.trabalho_final_APS_2.dto.BibliotecarioPerfilResponse;
 import edu.uea.trabalho_final_APS_2.dto.PerfilUpdateRequest;
+import edu.uea.trabalho_final_APS_2.dto.SenhaUpdateRequest;
 import edu.uea.trabalho_final_APS_2.dto.UsuarioPerfilResponse;
 import edu.uea.trabalho_final_APS_2.model.Aluno;
 import edu.uea.trabalho_final_APS_2.model.Bibliotecario;
@@ -32,15 +33,10 @@ public class PerfilController {
     public ResponseEntity<Object> visualizarPerfil(Authentication authentication) {
         String userEmail = authentication.getName();
 
-        try {
-            Usuario usuario = authService.buscarPerfilPorEmail(userEmail);
-            Object responseDto = mapearParaPerfilResponse(usuario);
+        Usuario usuario = authService.buscarPerfilPorEmail(userEmail);
+        Object responseDto = mapearParaPerfilResponse(usuario);
 
-            return ResponseEntity.ok(responseDto);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(responseDto);
     }
 
     @PreAuthorize("hasAnyRole('BIBLIOTECARIO', 'ADMIN')")
@@ -64,15 +60,23 @@ public class PerfilController {
 
         String userEmail = authentication.getName();
 
-        try {
-            Usuario usuarioAtualizado = authService.atualizarPerfil(userEmail, request);
-            Object responseDto = mapearParaPerfilResponse(usuarioAtualizado);
+        Usuario usuarioAtualizado = authService.atualizarPerfil(userEmail, request);
+        Object responseDto = mapearParaPerfilResponse(usuarioAtualizado);
 
-            return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(responseDto);
+    }
 
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @PutMapping("/senha")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<String> alterarSenha(
+            Authentication authentication,
+            @RequestBody SenhaUpdateRequest request) {
+
+        String userEmail = authentication.getName();
+
+        authService.alterarSenha(userEmail, request);
+
+        return ResponseEntity.ok("Senha alterada com sucesso.");
     }
 
     private UsuarioPerfilResponse mapearParaDto(Usuario usuario) {

@@ -17,6 +17,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -45,5 +46,6 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Builder.Default
     private boolean ativo = true;
 }

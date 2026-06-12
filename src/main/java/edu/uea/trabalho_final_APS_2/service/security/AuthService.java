@@ -6,6 +6,7 @@ import edu.uea.trabalho_final_APS_2.dto.BibliotecarioRegistroRequest;
 import edu.uea.trabalho_final_APS_2.dto.LoginRequest;
 import edu.uea.trabalho_final_APS_2.dto.PerfilUpdateRequest;
 import edu.uea.trabalho_final_APS_2.dto.RegistroResponse;
+import edu.uea.trabalho_final_APS_2.dto.SenhaUpdateRequest;
 import edu.uea.trabalho_final_APS_2.exception.EmailJaCadastradoException;
 import edu.uea.trabalho_final_APS_2.model.Aluno;
 import edu.uea.trabalho_final_APS_2.model.Bibliotecario;
@@ -16,6 +17,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +27,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
+
+    private static final Pattern EMAIL_REGEX =
+            Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
@@ -77,14 +82,20 @@ public class AuthService {
     }
 
     public RegistroResponse registerAluno(AlunoRegistroRequest request) {
-        if (usuarioRepository.existsByEmail(request.getEmail())) {
-            throw new EmailJaCadastradoException(request.getEmail());
+        validarCadastroAluno(request);
+
+        String nome = request.getNome().trim();
+        String email = request.getEmail().trim().toLowerCase();
+        String senha = request.getSenha().trim();
+
+        if (usuarioRepository.existsByEmail(email)) {
+            throw new EmailJaCadastradoException(email);
         }
 
         Aluno novoAluno = Aluno.builder()
-                .nome(request.getNome())
-                .email(request.getEmail())
-                .senha(passwordEncoder.encode(request.getSenha()))
+                .nome(nome)
+                .email(email)
+                .senha(passwordEncoder.encode(senha))
                 .role(Role.ROLE_ALUNO)
                 .ativo(true)
                 .matricula(request.getMatricula())
@@ -101,14 +112,23 @@ public class AuthService {
     }
 
     public RegistroResponse registerBibliotecario(BibliotecarioRegistroRequest request) {
-        if (usuarioRepository.existsByEmail(request.getEmail())) {
-            throw new EmailJaCadastradoException(request.getEmail());
+        validarCadastroBasico(
+                request.getNome(),
+                request.getEmail(),
+                request.getSenha());
+
+        String nome = request.getNome().trim();
+        String email = request.getEmail().trim().toLowerCase();
+        String senha = request.getSenha().trim();
+
+        if (usuarioRepository.existsByEmail(email)) {
+            throw new EmailJaCadastradoException(email);
         }
 
         Bibliotecario novoBibliotecario = Bibliotecario.builder()
-                .nome(request.getNome())
-                .email(request.getEmail())
-                .senha(passwordEncoder.encode(request.getSenha()))
+                .nome(nome)
+                .email(email)
+                .senha(passwordEncoder.encode(senha))
                 .role(Role.ROLE_BIBLIOTECARIO)
                 .ativo(true)
                 .anoDeContratacao(request.getAnoDeContratacao())
@@ -122,6 +142,39 @@ public class AuthService {
                 .email(bibliotecarioSalvo.getEmail())
                 .mensagem("Cadastro de bibliotecário realizado com sucesso. Faça o login para acessar.")
                 .build();
+    }
+
+    private void validarCadastroAluno(AlunoRegistroRequest request) {
+        validarCadastroBasico(
+                request.getNome(),
+                request.getEmail(),
+                request.getSenha());
+
+        if (request.getMatricula() == null || request.getMatricula() <= 0) {
+            throw new RuntimeException("Informe uma matrícula válida.");
+        }
+    }
+
+    private void validarCadastroBasico(String nome, String email, String senha) {
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new RuntimeException("Informe o nome.");
+        }
+
+        if (email == null || email.trim().isEmpty()) {
+            throw new RuntimeException("Informe o email.");
+        }
+
+        if (!EMAIL_REGEX.matcher(email.trim()).matches()) {
+            throw new RuntimeException("Informe um email válido.");
+        }
+
+        if (senha == null || senha.trim().isEmpty()) {
+            throw new RuntimeException("Informe a senha.");
+        }
+
+        if (senha.trim().length() < 4) {
+            throw new RuntimeException("A senha deve possuir pelo menos 4 caracteres.");
+        }
     }
 
     public long contarUsuarios() {
@@ -150,15 +203,61 @@ public class AuthService {
             throw new RuntimeException("O email não pode ser vazio.");
         }
 
-        Optional<Usuario> usuarioComEmail = usuarioRepository.findByEmail(request.getEmail().trim());
+        if (!EMAIL_REGEX.matcher(request.getEmail().trim()).matches()) {
+            throw new RuntimeException("Informe um email válido.");
+        }
+
+        Optional<Usuario> usuarioComEmail = usuarioRepository.findByEmail(request.getEmail().trim().toLowerCase());
 
         if (usuarioComEmail.isPresent() && !usuarioComEmail.get().getId().equals(usuario.getId())) {
             throw new RuntimeException("Este email já está cadastrado para outro usuário.");
         }
 
         usuario.setNome(request.getNome().trim());
-        usuario.setEmail(request.getEmail().trim());
+        usuario.setEmail(request.getEmail().trim().toLowerCase());
 
         return usuarioRepository.save(usuario);
+    }
+
+    @Transactional
+    public void alterarSenha(String userEmail, SenhaUpdateRequest request) {
+        Usuario usuario = usuarioRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+
+        if (request.getSenhaAtual() == null || request.getSenhaAtual().trim().isEmpty()) {
+            throw new RuntimeException("Informe a senha atual.");
+        }
+
+        if (request.getNovaSenha() == null || request.getNovaSenha().trim().isEmpty()) {
+            throw new RuntimeException("Informe a nova senha.");
+        }
+
+        if (request.getConfirmarNovaSenha() == null || request.getConfirmarNovaSenha().trim().isEmpty()) {
+            throw new RuntimeException("Confirme a nova senha.");
+        }
+
+        String senhaAtual = request.getSenhaAtual().trim();
+        String novaSenha = request.getNovaSenha().trim();
+        String confirmarNovaSenha = request.getConfirmarNovaSenha().trim();
+
+        if (!passwordEncoder.matches(senhaAtual, usuario.getSenha())) {
+            throw new RuntimeException("Senha atual incorreta.");
+        }
+
+        if (novaSenha.length() < 4) {
+            throw new RuntimeException("A nova senha deve possuir pelo menos 4 caracteres.");
+        }
+
+        if (!novaSenha.equals(confirmarNovaSenha)) {
+            throw new RuntimeException("A confirmação da senha não confere.");
+        }
+
+        if (passwordEncoder.matches(novaSenha, usuario.getSenha())) {
+            throw new RuntimeException("A nova senha deve ser diferente da senha atual.");
+        }
+
+        usuario.setSenha(passwordEncoder.encode(novaSenha));
+
+        usuarioRepository.save(usuario);
     }
 }
