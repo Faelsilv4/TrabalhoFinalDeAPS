@@ -21,7 +21,7 @@ import java.util.List;
 public class EmprestimoService {
 
     // REGRAS DEFINIDAS:
-    private static final int LIMITE_EMPRESTIMOS_ALUNO = 1; // Aluno só pode emprestar 1 livro
+    private static final int LIMITE_EMPRESTIMOS_ALUNO = 3; // Aluno só pode emprestar 1 livro
 
     private final EmprestimoRepository emprestimoRepository;
     private final UsuarioRepository usuarioRepository;
